@@ -49,7 +49,9 @@ const Requisiciones = () => {
                 <th>Usuario</th>
                 <th>Fecha de Solicitud</th>
                 <th>Estado</th>
+                <th>Motivo de rechazo</th>
                 <th>Descripción</th>
+                <th>Evidencia de entrega</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -60,9 +62,15 @@ const Requisiciones = () => {
                   <td>{requisicion.user}</td>
                   <td>{requisicion.fecha_solicitud}</td>
                   <td>{requisicion.estado}</td>
+                  <td>
+                    {requisicion.motivo_rechazo ? requisicion.motivo_rechazo : "Aún no se ha rechazado"}
+                  </td>
                   <td>{requisicion.descripcion}</td>
                   <td>
-                    
+                    {requisicion.evidencia_entrega ? "Hay evidencia" : "No hay evidencia"}
+                  </td>
+                  <td>
+
                     <Link to={`/requisiciones/${requisicion.id_requisicion}`}>Editar</Link>
                     <button onClick={() => onDeleteClick(requisicion)}>Eliminar</button>
                   </td>

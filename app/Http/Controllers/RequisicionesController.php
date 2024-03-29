@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRequisicionRequest;
+use App\Http\Requests\UpdateRequisicionRequest;
 use App\Http\Resources\RequisicionResource;
 use App\Models\Requisicion;
 use Illuminate\Http\Request;
@@ -39,10 +40,21 @@ class RequisicionesController extends Controller
         return response()->json(new RequisicionResource($requisicion));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateRequisicionRequest $request, $id)
     {
-        // Lógica para actualizar una requisición existente
+        // Encontrar la requisición por su ID
+        $requisicion = Requisicion::findOrFail($id);
+
+        // Validar los datos recibidos del formulario
+        $data = $request->validated();
+
+        // Actualizar los datos de la requisición
+        $requisicion->update($data);
+
+        // Devolver la respuesta JSON con los datos actualizados de la requisición
+        return response()->json(new RequisicionResource($requisicion));
     }
+
 
     public function destroy($id)
     {
