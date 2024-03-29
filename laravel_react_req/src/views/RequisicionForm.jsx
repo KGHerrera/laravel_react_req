@@ -8,11 +8,13 @@ export default function RequisicionForm() {
   const navigate = useNavigate();
   const { user } = useStateContext();
 
+  const today = new Date().toISOString().split('T')[0];
+
   const [requisicion, setRequisicion] = useState({
     id_requisicion: null,
     id_usuario: '',
-    fecha_solicitud: '',
-    estado: '',
+    fecha_solicitud: today,
+    estado: 'pendiente',
     descripcion: '',
     costo_estimado: '',
     motivo_rechazo: '',
@@ -39,7 +41,7 @@ export default function RequisicionForm() {
   const onSubmit = (ev) => {
     ev.preventDefault();
 
-    requisicion.id_usuario = user.id;
+    
 
     if (requisicion.id_requisicion) {
       axiosClient.put(`/requisiciones/${requisicion.id_requisicion}`, requisicion)
@@ -53,6 +55,7 @@ export default function RequisicionForm() {
           }
         });
     } else {
+      requisicion.id_usuario = user.id;
       axiosClient.post('/requisiciones', requisicion)
         .then(() => {
           navigate('/requisiciones');
@@ -82,13 +85,13 @@ export default function RequisicionForm() {
         {!loading && (
           <form onSubmit={onSubmit}>
 
-            <input
+            {/* <input
               value={requisicion.fecha_solicitud}
               onChange={(ev) =>
                 setRequisicion({ ...requisicion, fecha_solicitud: ev.target.value })
               }
               placeholder="Fecha de Solicitud"
-            />
+            /> */}
             <select
               value={requisicion.estado}
               onChange={(ev) => setRequisicion({ ...requisicion, estado: ev.target.value })}

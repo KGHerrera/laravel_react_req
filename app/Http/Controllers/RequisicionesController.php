@@ -58,6 +58,8 @@ class RequisicionesController extends Controller
 
     public function destroy($id)
     {
-        // Lógica para eliminar una requisición
+        $requisicion = Requisicion::findOrFail($id);
+        $requisicion->delete();
+        return response()->json(['message' => 'Requisición eliminada correctamente'], 200);
     }
 }
