@@ -5,6 +5,7 @@ import Users from './views/users.jsx';
 import DefaultLayout from './Components/DefaultLayout.jsx';
 import GuestLayout from './Components/GuestLayout.jsx';
 import UserForm from './views/UserForm.jsx';
+import Requisiciones from './views/requisiciones.jsx';
 
 const router = createBrowserRouter([
     {
@@ -22,7 +23,10 @@ const router = createBrowserRouter([
             {
                 path: "/users/:id",
                 element: <UserForm key="UserUpdate"/>
-            }
+            },{
+                path: "/requisiciones",
+                element: <Requisiciones />
+            },
         ]
     }, 
     {

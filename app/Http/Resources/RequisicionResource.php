@@ -15,14 +15,17 @@ class RequisicionResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'usuario_id' => $this->ID_Usuario,
-            'fecha_solicitud' => $this->Fecha_Solicitud,
-            'estado' => $this->Estado,
-            'descripcion' => $this->Descripcion,
-            'motivo_rechazo' => $this->Motivo_Rechazo,
-            'evidencia_entrega' => $this->Evidencia_Entrega,
-            'costo_estimado' => $this->Costo_Estimado,
+            'id_requisicion' => $this->id_requisicion,
+            'id_usuario' => $this->id_usuario,
+            'fecha_solicitud' => $this->fecha_solicitud,
+            'estado' => $this->estado,
+            'descripcion' => $this->descripcion,
+            'motivo_rechazo' => $this->motivo_rechazo,
+            'evidencia_entrega' => $this->evidencia_entrega,
+            'costo_estimado' => $this->costo_estimado,
+            'user' => [
+                'name' => $this->user->name,
+            ],
         ];
     }
 }

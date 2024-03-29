@@ -14,15 +14,15 @@ return new class extends Migration
     public function up()
     {
         Schema::create('requisiciones', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('ID_Usuario');
-            $table->foreign('ID_Usuario')->references('id')->on('users');
-            $table->date('Fecha_Solicitud');
-            $table->enum('Estado', ['Pendiente', 'Autorizada', 'Rechazada', 'Completada'])->default('Pendiente');
-            $table->text('Descripcion')->nullable();
-            $table->text('Motivo_Rechazo')->nullable();
-            $table->binary('Evidencia_Entrega')->nullable();
-            $table->decimal('Costo_Estimado', 10, 2)->nullable();
+            $table->id("id_requisicion");
+            $table->unsignedBigInteger('id_usuario');
+            $table->foreign('id_usuario')->references('id')->on('users');
+            $table->date('fecha_solicitud');
+            $table->enum('estado', ['Pendiente', 'Autorizada', 'Rechazada', 'Completada'])->default('Pendiente');
+            $table->text('descripcion')->nullable();
+            $table->text('motivo_Rechazo')->nullable();
+            $table->binary('evidencia_Entrega')->nullable();
+            $table->decimal('costo_Estimado', 10, 2)->nullable();
             $table->timestamps();
         });
     }
