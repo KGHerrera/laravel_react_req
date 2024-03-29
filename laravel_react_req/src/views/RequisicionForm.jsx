@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosClient from "../axiosClient";
+import { useStateContext } from "../contexts/contextprovider";
 
 export default function RequisicionForm() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useStateContext();
+
   const [requisicion, setRequisicion] = useState({
     id_requisicion: null,
     id_usuario: '',
     fecha_solicitud: '',
     estado: '',
     descripcion: '',
-    costo_estimado: ''
+    costo_estimado: '',
+    motivo_rechazo: '',
+    evidencia_entrega: '',
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState(null);
@@ -33,6 +38,9 @@ export default function RequisicionForm() {
 
   const onSubmit = (ev) => {
     ev.preventDefault();
+
+    requisicion.id_usuario = user.id;
+
     if (requisicion.id_requisicion) {
       axiosClient.put(`/requisiciones/${requisicion.id_requisicion}`, requisicion)
         .then(() => {
@@ -73,13 +81,7 @@ export default function RequisicionForm() {
         )}
         {!loading && (
           <form onSubmit={onSubmit}>
-            <input
-              value={requisicion.id_usuario}
-              onChange={(ev) =>
-                setRequisicion({ ...requisicion, id_usuario: ev.target.value })
-              }
-              placeholder="ID Usuario"
-            />
+
             <input
               value={requisicion.fecha_solicitud}
               onChange={(ev) =>
@@ -87,13 +89,26 @@ export default function RequisicionForm() {
               }
               placeholder="Fecha de Solicitud"
             />
-            <input
+            <select
               value={requisicion.estado}
-              onChange={(ev) =>
-                setRequisicion({ ...requisicion, estado: ev.target.value })
-              }
-              placeholder="Estado"
-            />
+              onChange={(ev) => setRequisicion({ ...requisicion, estado: ev.target.value })}
+            >
+              <option value="pendiente">Pendiente</option>
+              <option value="autorizada">Autorizada</option>
+              <option value="rechazada">Rechazada</option>
+              <option value="completada">Completada</option>
+            </select>
+
+            {requisicion.estado === 'rechazada' &&
+              <input
+                value={requisicion.motivo_rechazo || ''}
+                onChange={(ev) =>
+                  setRequisicion({ ...requisicion, motivo_rechazo: ev.target.value })
+                }
+                placeholder="Motivo de Rechazo"
+              />
+            }
+
             <input
               value={requisicion.descripcion}
               onChange={(ev) =>
@@ -108,6 +123,21 @@ export default function RequisicionForm() {
               }
               placeholder="Costo Estimado"
             />
+
+            {requisicion.id_requisicion &&
+              <input
+                type="file"
+                onChange={(ev) =>
+                  setRequisicion({ ...requisicion, evidencia_entrega: ev.target.files[0] })
+                }
+              />
+
+            }
+
+
+
+
+
             <input type="submit" value="Guardar" />
           </form>
         )}

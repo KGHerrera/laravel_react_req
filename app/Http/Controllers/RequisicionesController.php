@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreRequisicionRequest;
 use App\Http\Resources\RequisicionResource;
 use App\Models\Requisicion;
 use Illuminate\Http\Request;
@@ -26,9 +27,16 @@ class RequisicionesController extends Controller
         return response()->json(new RequisicionResource($requisicion));
     }
 
-    public function store(Request $request)
+    public function store(StoreRequisicionRequest $request)
     {
-        // Lógica para crear una nueva requisición
+        // Valida y obtiene los datos validados del formulario
+        $data = $request->validated();
+
+        // Crea una nueva requisición con los datos validados
+        $requisicion = Requisicion::create($data);
+
+        // Devuelve la respuesta JSON con los datos de la requisición creada
+        return response()->json(new RequisicionResource($requisicion));
     }
 
     public function update(Request $request, $id)
