@@ -14,7 +14,7 @@ const Requisiciones = () => {
     if (!window.confirm("Are you sure you want to delete this requisicion?")) {
       return;
     }
-    axiosClient.delete(`/requisiciones/${requisicion.ID_Requisicion}`)
+    axiosClient.delete(`/requisiciones/${requisicion.id_requisicion}`)
       .then(() => {
         obtenerRequisiciones();
       });
@@ -25,7 +25,6 @@ const Requisiciones = () => {
     axiosClient.get('/requisiciones')
       .then(({ data }) => {
         setRequisiciones(data);
-        console.log(data)
         setLoading(false);
       })
       .catch(() => {
@@ -58,11 +57,12 @@ const Requisiciones = () => {
               {requisiciones.map(requisicion => (
                 <tr key={requisicion.id_requisicion}>
                   <td>{requisicion.id_requisicion}</td>
-                  <td>{requisicion.user.name}</td>
+                  <td>{requisicion.user}</td>
                   <td>{requisicion.fecha_solicitud}</td>
                   <td>{requisicion.estado}</td>
                   <td>{requisicion.descripcion}</td>
                   <td>
+                    
                     <Link to={`/requisiciones/${requisicion.id_requisicion}`}>Editar</Link>
                     <button onClick={() => onDeleteClick(requisicion)}>Eliminar</button>
                   </td>

@@ -23,6 +23,8 @@ export default function UserForm(){
               .then(({data}) => {
                 setLoading(false)
                 setUsers(data)
+
+                console.log(data)
               })
               .catch(() => {
                 setLoading(false)
@@ -63,7 +65,7 @@ export default function UserForm(){
     <>
       {user.id && <h1>Update User: {user.name}</h1>}
       {!user.id && <h1>New User</h1>}
-      <div className="card animated fadeInDown">
+      <div className="">
         {loading && (
           <div className="text-center">
             Loading...

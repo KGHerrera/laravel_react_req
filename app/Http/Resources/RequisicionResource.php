@@ -12,6 +12,8 @@ class RequisicionResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
+    public static $wrap = false;
+    
     public function toArray($request)
     {
         return [
@@ -23,9 +25,7 @@ class RequisicionResource extends JsonResource
             'motivo_rechazo' => $this->motivo_rechazo,
             'evidencia_entrega' => $this->evidencia_entrega,
             'costo_estimado' => $this->costo_estimado,
-            'user' => [
-                'name' => $this->user->name,
-            ],
+            'user' => $this->user ? $this->user->name : null,
         ];
     }
 }

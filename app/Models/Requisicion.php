@@ -12,14 +12,7 @@ class Requisicion extends Model
     // Nombre de la tabla asociada con el modelo
     protected $table = 'requisiciones';
 
-    // Nombre de la clave primaria en la tabla
     protected $primaryKey = 'id_requisicion';
-
-    // Si la clave primaria es un incremento automático (autoincremental)
-    public $incrementing = true;
-
-    // Si las marcas de tiempo (timestamps) deben ser administradas automáticamente por Eloquent
-    public $timestamps = true;
 
     // Los atributos que pueden ser asignados masivamente
     protected $fillable = [

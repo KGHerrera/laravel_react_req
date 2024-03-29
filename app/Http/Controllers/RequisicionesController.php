@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\RequisicionResource;
 use App\Models\Requisicion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class RequisicionesController extends Controller
 {
@@ -18,7 +19,11 @@ class RequisicionesController extends Controller
 
     public function show($id)
     {
-        // Lógica para mostrar una requisición específica
+        // Cargar manualmente el modelo Requisicion correspondiente usando el ID proporcionado
+        $requisicion = Requisicion::findOrFail($id);
+
+        // Devolver una respuesta JSON con el recurso RequisicionResource
+        return response()->json(new RequisicionResource($requisicion));
     }
 
     public function store(Request $request)
