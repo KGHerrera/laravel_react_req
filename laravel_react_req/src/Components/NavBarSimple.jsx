@@ -77,18 +77,18 @@ export function NavbarSimple() {
 
   return (
     <Navbar className="mx-auto max-w-screen-xl px-4 py-2 lg:px-8 lg:py-4 shadow-lg">
-      <div className="container mx-auto flex items-center justify-between text-gray-950">
+      <div className="container mx-auto flex items-center justify-between text-gray-900">
         <Typography
           as="a"
           href="#"
-          className="mr-4 cursor-pointer py-1.5 font-medium"
+          className="mr-4 cursor-pointer py-1.5 font-medium text-gray-950"
         >
           Requisiciones
         </Typography>
         <div className="hidden lg:block">{navList}</div>
         <div className="flex items-center gap-x-1">
           {user &&
-            <Button onClick={onLogout} variant="filled" size="sm" className="hidden lg:inline-block text-gray-100 bg-cyan-600 rounded-sm">
+            <Button onClick={onLogout} variant="filled" size="sm" className="hidden lg:inline-block">
               <span>Log Out</span>
             </Button>
           }
@@ -96,7 +96,7 @@ export function NavbarSimple() {
 
           {!user && <>
 
-            <Button variant="filled" size="sm" color="gray" className="hidden lg:inline-block text-gray-100 bg-cyan-600 rounded-sm">
+            <Button variant="filled" size="sm" color="gray" className="hidden lg:inline-block">
               <span>Log In</span>
             </Button>
             <Button
@@ -172,7 +172,7 @@ export function NavbarSimple() {
            <div className="container mx-auto">
            {navList}
            <div className="flex items-center gap-x-1">
-             <Button fullWidth variant="text" size="sm" onClick={onLogout} className="text-gray-950">
+             <Button fullWidth variant="filled" size="sm" onClick={onLogout} className="">
                <span>Log Out</span>
              </Button>
            </div>

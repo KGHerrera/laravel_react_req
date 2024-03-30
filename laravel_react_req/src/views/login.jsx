@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Card,
@@ -12,16 +12,16 @@ import { useStateContext } from '../contexts/contextprovider';
 import '../index.css';
 
 const Login = () => {
-    const emailRef = useRef();
-    const passwordRef = useRef();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const { setUser, setToken } = useStateContext();
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
         const payload = {
-            email: emailRef.current.value,
-            password: passwordRef.current.value
+            email: email,
+            password: password
         };
 
         axiosClient.post("/login", payload)
@@ -53,14 +53,16 @@ const Login = () => {
                             type="email"
                             placeholder="nombre@correo.com"
                             label="Correo electrónico"
-                            ref={emailRef}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                         <Input
                             size="lg"
                             type="password"
                             placeholder="********"
                             label="Contraseña"
-                            ref={passwordRef}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
                     <Checkbox
@@ -90,4 +92,5 @@ const Login = () => {
 };
 
 export default Login;
+
 
