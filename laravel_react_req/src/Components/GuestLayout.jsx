@@ -1,6 +1,7 @@
 import React from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
 import { useStateContext } from '../contexts/contextprovider';
+import { NavbarSimple } from './NavBarSimple';
 
 const GuestLayout = () => {
 
@@ -11,10 +12,10 @@ const GuestLayout = () => {
     }
 
     return (
-        <div>
-            <div>GuestLayout</div>
+        <>
+            
             <Outlet />
-        </div>
+        </>
     )
 }
 

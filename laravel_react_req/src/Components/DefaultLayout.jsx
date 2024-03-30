@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
 import { useStateContext } from '../contexts/contextprovider'
 import axiosClient from '../axiosClient';
+import { NavbarSimple } from './NavBarSimple';
 
 const DefaultLayout = () => {
 
@@ -29,24 +30,10 @@ const DefaultLayout = () => {
     }, [])
 
     return (
-        <div>
-            <div>
-                <header>
-                    <div>Header</div>
-                </header>
-
-                <div>{user?.name}
-                <a href="#" onClick={onLogout}> LogOut</a>
-                </div>
-
-                <main><Outlet /></main>
-
-            </div>
-
-
-
-
-        </div>
+        <>
+        <NavbarSimple></NavbarSimple>
+        <Outlet />
+        </>
 
     )
 }
