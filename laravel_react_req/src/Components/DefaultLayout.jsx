@@ -16,23 +16,23 @@ const DefaultLayout = () => {
         e.preventDefault()
 
         axiosClient.get('/logout')
-            .then(({}) => {
+            .then(({ }) => {
                 setUser(null)
                 setToken(null)
-        })
+            })
     }
 
     useEffect(() => {
         axiosClient.get('/user')
             .then(({ data }) => {
                 setUser(data)
-        })
+            })
     }, [])
 
     return (
         <>
-        <NavbarSimple></NavbarSimple>
-        <Outlet />
+            
+            <Outlet />
         </>
 
     )

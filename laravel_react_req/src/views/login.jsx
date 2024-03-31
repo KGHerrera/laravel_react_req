@@ -39,14 +39,14 @@ const Login = () => {
 
     return (
         <div className="flex justify-center items-center h-screen bg-gray-200">
-            <Card className="max-w-md shadow-lg px-4 py-4">
+            <Card className="max-w-md shadow-lg p-8" style={{ width: '360px' }}>
                 <Typography variant="h4" color="blue-gray" className="text-center">
                     Iniciar sesión
                 </Typography>
                 <Typography color="gray" className="mt-1 font-normal text-center">
-                    ¡Bienvenido! ingresa los datos para iniciar.
+                    ¡Bienvenido! ingresa tus datos para iniciar.
                 </Typography>
-                <form className="mt-4 mb-2" onSubmit={handleSubmit}>
+                <form className="mt-4 mb-4" onSubmit={handleSubmit}>
                     <div className="flex flex-col gap-6">
                         <Input
                             size="lg"

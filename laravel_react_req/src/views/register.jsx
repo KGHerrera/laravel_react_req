@@ -41,12 +41,12 @@ const Register = () => {
 
     return (
         <div className="flex justify-center items-center h-screen bg-gray-200">
-            <Card className="max-w-md shadow-lg px-4 py-4">
+            <Card className="max-w-md shadow-lg p-8" style={{ width: '360px' }}>
                 <Typography variant="h4" color="blue-gray" className="text-center">
                     Crea una cuenta
                 </Typography>
                 <Typography color="gray" className="mt-1 font-normal text-center">
-                    ¡Bienvenido! ingresa los datos para registrarte.
+                    ¡Bienvenido! ingresa tus datos para registrarte.
                 </Typography>
                 <form className="mt-4 mb-2" onSubmit={handleSubmit}>
                     <div className="flex flex-col gap-6">
@@ -75,7 +75,7 @@ const Register = () => {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
-                    <Button type="submit" className="mt-2" fullWidth>
+                    <Button type="submit" className="mt-6" fullWidth>
                         Registrarse
                     </Button>
                     <Typography color="gray" className="mt-4 text-center font-normal">
