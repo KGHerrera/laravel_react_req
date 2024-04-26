@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('requisiciones', function (Blueprint $table) {
-            $table->id();
+            $table->id('id_requisicion');
             $table->unsignedBigInteger('id_usuario');
             $table->foreign('id_usuario')->references('id')->on('users');
             $table->date('fecha_solicitud');
