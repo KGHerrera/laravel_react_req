@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Card,
-  Input,
-  Button,
-  Typography,
+    Card,
+    Input,
+    Button,
+    Typography,
+    CardHeader,
 } from "@material-tailwind/react";
 import axiosClient from '../axiosClient';
 import { useStateContext } from '../contexts/contextprovider';
@@ -26,7 +27,7 @@ const Register = () => {
         };
 
         axiosClient.post("/register", payload)
-            .then(({data}) => {
+            .then(({ data }) => {
                 setUser(data.user);
                 setToken(data.token);
             })
@@ -40,23 +41,27 @@ const Register = () => {
     };
 
     return (
-        <div className="flex justify-center items-center h-screen bg-gray-200">
+        <div className="flex justify-center items-center min-h-screen bg-gray-900">
             <Card className="max-w-md shadow-lg p-8" style={{ width: '360px' }}>
-                <Typography variant="h4" color="blue-gray" className="text-center">
-                    Crea una cuenta
-                </Typography>
-                <Typography color="gray" className="mt-1 font-normal text-center">
-                    ¡Bienvenido! ingresa tus datos para registrarte.
-                </Typography>
+                <CardHeader
+                    variant="filled"
+                    color='gray'
+                    className="grid m-0 mb-4 h-24 w-full place-items-center "
+                >
+                    <Typography variant="h4" color="white" className="text-center">
+                        Registrarse
+                    </Typography>
+                </CardHeader>
                 <form className="mt-4 mb-2" onSubmit={handleSubmit}>
                     <div className="flex flex-col gap-6">
                         <Input
                             size="lg"
                             type="name"
-                            placeholder="Nombre"
-                            label="Nombre"
+                            placeholder="Nombre de usuario"
+                            label="Nombre de usuario"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
+                            icon={<i className="fa fa-user" />}
                         />
                         <Input
                             size="lg"
@@ -65,6 +70,7 @@ const Register = () => {
                             label="Correo electrónico"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            icon={<i className="fa fa-envelope" />}
                         />
                         <Input
                             size="lg"
@@ -73,14 +79,15 @@ const Register = () => {
                             label="Contraseña"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            icon={<i className="fa fa-lock" />}
                         />
                     </div>
-                    <Button type="submit" className="mt-6" fullWidth>
+                    <Button type="submit" className="mt-6 bg-pink-800" fullWidth>
                         Registrarse
                     </Button>
-                    <Typography color="gray" className="mt-4 text-center font-normal">
+                    <Typography color="gray" variant='small' className="mt-4 text-center font-normal">
                         ¿Ya tienes una cuenta?{" "}
-                        <Link to="/login" className="font-medium text-gray-900">
+                        <Link to="/login" className="font-medium text-pink-800">
                             Iniciar sesión
                         </Link>
                     </Typography>

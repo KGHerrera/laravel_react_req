@@ -6,6 +6,7 @@ import {
   Typography,
   Button,
   IconButton,
+  Collapse,
 } from "@material-tailwind/react";
 import { useStateContext } from "../contexts/contextprovider";
 import axiosClient from "../axiosClient";
@@ -49,58 +50,59 @@ export function NavbarSimple() {
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6 w-full">
       {user && (
         <>
-        <li>
-          <Typography
-            as="a"
-            href="#"
-            variant="paragraph"
-            color="blue-gray"
-            className="flex items-center gap-x-2 p-1 font-medium"
-          >
-            
-            <a href="/users" className="flex items-center font-semibold hover:text-blue-gray-700">
+          <li>
+            {user.name && <Typography
+              as="a"
+              href="#"
+              variant="small"
+              color="blue-gray"
+              className="flex items-center gap-x-2 p-1 font-medium"
+            >
+
+
               {user.name}
-            </a>
-          </Typography>
-        </li>
-        <li>
-          <Typography
-            as="a"
-            href="#"
-            variant="paragraph"
-            color="blue-gray"
-            className="flex items-center gap-x-2 p-1 font-medium hover:text-blue-gray-700"
-          >
-            
-            <a href="#" className="flex items-center">
+
+            </Typography>
+            }
+          </li>
+          <li>
+            <Typography
+              as="a"
+              href="#"
+              variant="small"
+              color="blue-gray"
+              className="flex items-center gap-x-2 p-1 font-medium hover:text-blue-gray-700"
+            >
+
+
               usuarios
-            </a>
-          </Typography>
-        </li>
-        <li>
-          <Typography
-            as="a"
-            href="#"
-            variant="paragraph"
-            color="blue-gray"
-            className="flex items-center gap-x-2 p-1 font-medium hover:text-blue-gray-700"
-          >
-            
-            <a href="#" className="flex items-center">
+
+            </Typography>
+          </li>
+          <li>
+            <Typography
+              as="a"
+              href="#"
+              variant="small"
+              color="blue-gray"
+              className="flex items-center gap-x-2 p-1 font-medium hover:text-blue-gray-700"
+            >
+
+
               requisiciones
-            </a>
-          </Typography>
-        </li>
+
+            </Typography>
+          </li>
 
         </>
 
-        
+
       )}
     </ul>
   );
 
   return (
-    <div className="h-full px-8 mt-2 pt-2">
+    <div className="h-full mt-2 pt-4 px-4">
       <div className="flex items-center justify-between  text-gray-900 w-full"  >
         <Typography
           as="a"
@@ -172,7 +174,7 @@ export function NavbarSimple() {
           )}
         </IconButton>
       </div>
-      <MobileNav open={openNav} className="">
+      <Collapse open={openNav} className="">
         {!user ? (
           <div className="container mx-auto">
             {navList}
@@ -199,7 +201,7 @@ export function NavbarSimple() {
             </div>
           </div>
         )}
-      </MobileNav>
+      </Collapse>
     </div>
   );
 }

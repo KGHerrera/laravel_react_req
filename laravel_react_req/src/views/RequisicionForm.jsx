@@ -10,6 +10,7 @@ import {
   Select,
   Option,
   Textarea,
+  CardHeader,
 } from "@material-tailwind/react";
 
 export default function RequisicionForm() {
@@ -112,18 +113,29 @@ export default function RequisicionForm() {
   return (
     <>
 
-      <div className="flex justify-center items-center h-screen bg-gray-200">
+      <div className="flex justify-center items-center min-h-screen bg-gray-900">
 
         <Card className="max-w-md shadow-lg p-8" style={{ width: '360px' }}>
 
-          {requisicion.id_requisicion && <Typography variant="h5" color="blue-gray" className="text-center mb-4">
-            Actualizar requisición:
-            {requisicion.id_requisicion}</Typography>}
-          {!requisicion.id_requisicion &&
+         
+            <CardHeader
+              variant="filled"
+              color="gray"
+              className="grid m-0 mb-8 h-24 w-full place-items-center"
+            >
+              <Typography variant="h4" color="white" className="text-center">
 
-            <Typography variant="h5" color="blue-gray" className="text-center mb-4">
-              Nueva requisición</Typography>
-          }
+              
+
+              {requisicion.id_requisicion && "Editar requisición" || "Nueva requisición"}
+
+                </Typography>
+            </CardHeader>
+
+          
+
+            
+          
 
 
           {loading && <div>Loading...</div>}
@@ -141,6 +153,7 @@ export default function RequisicionForm() {
                   value={requisicion.estado}
                   onChange={(val) => setRequisicion({ ...requisicion, estado: val })}
                   label="Estado"
+                  
                 >
                   <Option value="pendiente">Pendiente</Option>
                   <Option value="autorizada">Autorizada</Option>
@@ -159,6 +172,7 @@ export default function RequisicionForm() {
                     }
                     placeholder="Motivo de Rechazo"
                     className="input"
+                    icon={<i className="fa fa-exclamation" />}
 
                   />
                 }
@@ -168,11 +182,10 @@ export default function RequisicionForm() {
                     label="Descripción"
                     onChange={(ev) => handleChangeDescripcion(ev)}
                     placeholder=""
-                    className="input"
-                    error={errors.descripcion}
+                    className="input"                    
 
                   />
-                  {errors.descripcion && <span className="text-red-500 text-xs">{errors.descripcion}</span>}
+                  {errors.descripcion && <p className="text-red-500 text-xs">{errors.descripcion}</p>}
                 </div>
 
                 <div>
@@ -184,30 +197,36 @@ export default function RequisicionForm() {
                     }
                     placeholder="Costo Estimado"
                     className="input"
-                    error={errors.costo_estimado}
+                    icon={<i className="fa fa-dollar" />}
                   />
-                  {errors.costo_estimado && <span className="text-red-500 text-xs">{errors.costo_estimado}</span>}
+                  {errors.costo_estimado && <p className="text-red-500 text-xs">{errors.costo_estimado}</p>}
                 </div>
 
                 {requisicion.id_requisicion &&
                   <Input
                     label="Evidencia de Entrega"
+                    
                     type="file"
+                    className="file-select"
+
                     onChange={(ev) =>
                       setRequisicion({ ...requisicion, evidencia_entrega: ev.target.files[0] })
                     }
-                    className="input"
+                    variant="outlined"
                   />
 
                 }
               </div>
-              <Button type="submit" className="mt-6" fullWidth>
-                Guardar
-              </Button>
 
-              <Button variant="outlined" className="mt-3" fullWidth onClick={handleCancelar}>
-                Cancelar
-              </Button>
+              <div className="flex flex-row mt-6 gap-2">
+                <Button type="submit" className="bg-pink-800" variant="filled" fullWidth>
+                  Guardar
+                </Button>
+
+                <Button variant="filled" className="" fullWidth onClick={handleCancelar}>
+                  Cancelar
+                </Button>
+              </div>
             </form>
           )}
         </Card>

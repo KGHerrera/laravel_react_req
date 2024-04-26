@@ -40,6 +40,25 @@ class RequisicionesController extends Controller
         return response()->json(new RequisicionResource($requisicion));
     }
 
+
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // ajusta las reglas de validación según tus necesidades
+        ]);
+
+        $image = $request->file('image');
+        $imageName = 'requisicion_' . $request->id_requisicion . '.' . $image->getClientOriginalExtension();
+
+        $image->move(public_path('ruta/de/tu/carpeta/' . $request->id_requisicion), $imageName);
+
+        $requisicion = Requisicion::find($request->id_requisicion);
+        $requisicion->evidencia_entrega = $imageName;
+        $requisicion->save();
+
+        return response()->json(['message' => 'Imagen subida exitosamente']);
+    }
+
     public function update(UpdateRequisicionRequest $request, $id)
     {
         // Encontrar la requisición por su ID

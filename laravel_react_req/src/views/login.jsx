@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Card,
-  Input,
-  Checkbox,
-  Button,
-  Typography,
+    Card,
+    Input,
+    Checkbox,
+    Button,
+    Typography,
+    CardHeader,
 } from "@material-tailwind/react";
 import axiosClient from '../axiosClient';
 import { useStateContext } from '../contexts/contextprovider';
@@ -16,6 +17,11 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const { setUser, setToken } = useStateContext();
 
+    const [errors, setErrors] = useState(null);
+
+
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -25,63 +31,115 @@ const Login = () => {
         };
 
         axiosClient.post("/login", payload)
-            .then(({data}) => {
-                setUser(data.user);
-                setToken(data.token);
+            .then(({ data }) => {
+                if (data.user && data.token) {
+                    // Las credenciales son correctas, establecer usuario y token
+                    setUser(data.user);
+                    setToken(data.token);
+                    setErrors(null);
+                } else {
+                    // Credenciales incorrectas, mostrar mensaje de error
+                    setErrors({ message: "El correo electrónico o la contraseña no coinciden." });
+
+                }
             })
             .catch(err => {
                 const response = err.response;
                 if (response && response.status === 422) {
-                    console.log(response.data.errors);
+
+                    setErrors(response.data.errors);
                 }
             });
     };
 
+
     return (
-        <div className="flex justify-center items-center h-screen bg-gray-200">
+        <div className="flex justify-center items-center min-h-screen bg-gray-900">
             <Card className="max-w-md shadow-lg p-8" style={{ width: '360px' }}>
-                <Typography variant="h4" color="blue-gray" className="text-center">
-                    Iniciar sesión
-                </Typography>
-                <Typography color="gray" className="mt-1 font-normal text-center">
-                    ¡Bienvenido! ingresa tus datos para iniciar.
-                </Typography>
+
+                <CardHeader
+                    variant="filled"
+                    color='gray'
+                    className="grid m-0 mb-4 h-24 w-full place-items-center"
+                >
+                    <Typography variant="h4" color="white" className="text-center">
+                        Iniciar Sesión
+                    </Typography>
+                </CardHeader>
+
                 <form className="mt-4 mb-4" onSubmit={handleSubmit}>
-                    <div className="flex flex-col gap-6">
-                        <Input
-                            size="lg"
-                            type="email"
-                            placeholder="nombre@correo.com"
-                            label="Correo electrónico"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                        <Input
-                            size="lg"
-                            type="password"
-                            placeholder="********"
-                            label="Contraseña"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
+
+
+                    {/* <Typography color="gray" className="mt-4 mb-4 font-normal text-center">
+                        ¡Bienvenido! ingresa tus datos.
+                    </Typography> */}
+
+                    <div className="flex flex-col gap-6 mb-2">
+
+                        <div>
+                            <Input
+                                size="lg"
+                                type="email"
+                                placeholder="nombre@correo.com"
+                                label="Correo electrónico " icon={<i className="fa fa-user" />}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+
+                                
+                            />
+
+                            {errors && errors.email && (
+
+                                <p className="text-pink-800 text-xs mt-1">{errors.email}</p>
+
+                            )}
+                        </div>
+
+
+                        <div>
+
+                            <Input
+                                size="lg"
+                                type="password"
+                                placeholder="********"
+                                label="Contraseña"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                icon={<i className="fa fa-lock" />}
+                            />
+                            {errors && errors.password && (
+
+                                <p className="text-pink-800 text-xs mt-1">{errors.email}</p>
+
+                            )}
+
+                            {errors && errors.message && (
+
+                                <p className="text-pink-800 text-xs mt-1">{errors.message}</p>
+
+                            )}
+                        </div>
                     </div>
-                    <Checkbox
+                    <Checkbox color='pink' className='fill-pink-800'
                         label={
                             <Typography
                                 variant="small"
-                                color="gray"
+                                
                                 className="flex items-center font-normal"
                             >
                                 Recuérdame
                             </Typography>
                         }
                     />
-                    <Button type="submit" className="mt-2" fullWidth>
+                    <Button type="submit" className="bg-pink-800 mt-2" fullWidth>
                         Iniciar sesión
                     </Button>
-                    <Typography color="gray" className="mt-4 text-center font-normal">
+
+
+
+                    <Typography color="gray" variant='small' className="mt-4 text-center font-normal">
                         ¿No tienes una cuenta?{" "}
-                        <Link to="/register" className="font-medium text-gray-900">
+                        <Link to="/register" className="font-medium text-pink-800">
                             Registrarse
                         </Link>
                     </Typography>
