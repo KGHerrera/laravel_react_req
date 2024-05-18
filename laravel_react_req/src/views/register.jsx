@@ -16,9 +16,37 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { setUser, setToken } = useStateContext();
+    const [errors, setErrors] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        let errors = {}; // Objeto para almacenar los errores
+
+        // Verificar si el campo de correo electrónico está vacío
+        if (!email) {
+            errors.email = "El campo de correo electrónico es obligatorio.";
+        }
+
+        // Verificar si el campo de contraseña está vacío
+        if (!password) {
+            errors.password = "El campo de contraseña es obligatorio.";
+        }
+
+        if (password && password.length < 8) {
+            errors.password = "El campo de contraseña debe tener 8 caracteres.";
+        }
+
+        // Verificar si el campo de nombre está vacío
+        if (!name || name.trim() === '') {
+            errors.name = "El campo de nombre es obligatorio.";
+        }
+
+        // Si hay errores, establecerlos y detener la ejecución de la función
+        if (Object.keys(errors).length > 0) {
+            setErrors(errors);
+            return;
+        }
 
         const payload = {
             name: name,
@@ -35,8 +63,10 @@ const Register = () => {
                 const response = err.response;
                 if (response && response.status === 422) {
                     console.log(response.data.errors);
+                    setErrors(response.data.errors);
                 }
-                console.log(err);
+
+
             });
     };
 
@@ -53,41 +83,72 @@ const Register = () => {
                     </Typography>
                 </CardHeader>
                 <form className="mt-4 mb-2" onSubmit={handleSubmit}>
-                    <div className="flex flex-col gap-6">
-                        <Input
-                            size="lg"
-                            type="name"
-                            placeholder="Nombre de usuario"
-                            label="Nombre de usuario"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            icon={<i className="fa fa-user" />}
-                        />
-                        <Input
-                            size="lg"
-                            type="email"
-                            placeholder="nombre@correo.com"
-                            label="Correo electrónico"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            icon={<i className="fa fa-envelope" />}
-                        />
-                        <Input
-                            size="lg"
-                            type="password"
-                            placeholder="********"
-                            label="Contraseña"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            icon={<i className="fa fa-lock" />}
-                        />
+                    <div className="flex flex-col gap-6 mb-6">
+
+                        <div>
+                            <Input
+                                size="lg"
+                                type="name"
+                                placeholder="Nombre de usuario"
+                                label="Nombre de usuario"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                icon={<i className="fa fa-user" />}
+                            />
+
+                            {errors && errors.name && (
+
+                                <p className="text-pink-600 text-xs mt-1">{errors.name}</p>
+
+                            )}
+                        </div>
+
+                        <div>
+                            <Input
+                                size="lg"
+                                type="email"
+                                placeholder="nombre@correo.com"
+                                label="Correo electrónico"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                icon={<i className="fa fa-envelope" />}
+                            />
+
+                            {errors && errors.email && (
+
+                                <p className="text-pink-600 text-xs mt-1">{errors.email}</p>
+
+                            )}
+
+                        </div>
+
+                        <div>
+
+                            <Input
+                                size="lg"
+                                type="password"
+                                placeholder="********"
+                                label="Contraseña"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                icon={<i className="fa fa-lock" />}
+                            />
+
+                            {errors && errors.password && (
+
+                                <p className="text-pink-600 text-xs mt-1">{errors.password}</p>
+
+                            )}
+
+                        </div>
+
                     </div>
-                    <Button type="submit" className="mt-6 bg-pink-800" fullWidth>
+                    <Button type="submit" color='pink' className="mt-6" fullWidth>
                         Registrarse
                     </Button>
                     <Typography color="gray" variant='small' className="mt-4 text-center font-normal">
                         ¿Ya tienes una cuenta?{" "}
-                        <Link to="/login" className="font-medium text-pink-800">
+                        <Link to="/login" className="font-medium text-pink-600">
                             Iniciar sesión
                         </Link>
                     </Typography>

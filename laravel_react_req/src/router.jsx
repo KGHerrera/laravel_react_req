@@ -7,12 +7,15 @@ import GuestLayout from './Components/GuestLayout.jsx';
 import UserForm from './views/UserForm.jsx';
 import Requisiciones from './views/requisiciones.jsx';
 import RequisicionForm from './views/RequisicionForm.jsx';
+import Pagina404 from './views/Pagina404.jsx';
+import LandingPage from './views/LandingPage.jsx';
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <DefaultLayout />,
         children: [
+            
             {
                 path: "/users",
                 element: <Users />
@@ -24,7 +27,7 @@ const router = createBrowserRouter([
             {
                 path: "/users/:id",
                 element: <UserForm key="UserUpdate" />
-            }, 
+            },
             {
                 path: "/requisiciones",
                 element: <Requisiciones />
@@ -37,12 +40,21 @@ const router = createBrowserRouter([
                 path: "/requisiciones/:id",
                 element: <RequisicionForm key="RequisicionUpdate" />
             },
+
+            {
+                path: "*",
+                element: <Pagina404 />
+            }
         ]
     },
     {
         path: "/",
         element: <GuestLayout />,
         children: [
+            {
+                path: "/landing",
+                element: <LandingPage />
+            },
             {
                 path: "/register",
                 element: <Register />
@@ -51,7 +63,12 @@ const router = createBrowserRouter([
                 path: "/login",
                 element: <Login />
             },
-            
+
+            {
+                path: "*",
+                element: <Pagina404 />
+            }
+
         ]
     }
 ]);

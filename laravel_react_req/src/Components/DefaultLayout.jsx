@@ -9,8 +9,8 @@ const DefaultLayout = () => {
     const { user, token, setUser, setToken } = useStateContext();
 
     if (!token) {
-        return <Navigate to="/login" />
-    }
+        return <Navigate to="/landing" />
+    } 
 
     const onLogout = (e) => {
         e.preventDefault()
@@ -31,7 +31,6 @@ const DefaultLayout = () => {
 
     return (
         <>
-            
             <Outlet />
         </>
 

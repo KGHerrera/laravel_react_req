@@ -25,6 +25,24 @@ const Login = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        let errors = {};
+
+        // Verificar si el campo de correo electrónico está vacío
+        if (!email) {
+            errors.email = "El campo de correo electrónico es obligatorio.";
+        }
+
+        // Verificar si el campo de contraseña está vacío
+        if (!password) {
+            errors.password = "El campo de contraseña es obligatorio.";
+        }
+
+        // Si hay errores, establecerlos y detener la ejecución de la función
+        if (Object.keys(errors).length > 0) {
+            setErrors(errors);
+            return;
+        }
+
         const payload = {
             email: email,
             password: password
@@ -49,6 +67,7 @@ const Login = () => {
 
                     setErrors(response.data.errors);
                 }
+                console.log(response.data.errors);
             });
     };
 
@@ -90,7 +109,7 @@ const Login = () => {
 
                             {errors && errors.email && (
 
-                                <p className="text-pink-800 text-xs mt-1">{errors.email}</p>
+                                <p className="text-pink-600 text-xs mt-1">{errors.email}</p>
 
                             )}
                         </div>
@@ -109,13 +128,13 @@ const Login = () => {
                             />
                             {errors && errors.password && (
 
-                                <p className="text-pink-800 text-xs mt-1">{errors.email}</p>
+                                <p className="text-pink-600 text-xs mt-1">{errors.password}</p>
 
                             )}
 
                             {errors && errors.message && (
 
-                                <p className="text-pink-800 text-xs mt-1">{errors.message}</p>
+                                <p className="text-pink-600 text-xs mt-1">{errors.message}</p>
 
                             )}
                         </div>
@@ -131,7 +150,7 @@ const Login = () => {
                             </Typography>
                         }
                     />
-                    <Button type="submit" className="bg-pink-800 mt-2" fullWidth>
+                    <Button type="submit" color='pink' className="mt-2" fullWidth>
                         Iniciar sesión
                     </Button>
 
@@ -139,7 +158,7 @@ const Login = () => {
 
                     <Typography color="gray" variant='small' className="mt-4 text-center font-normal">
                         ¿No tienes una cuenta?{" "}
-                        <Link to="/register" className="font-medium text-pink-800">
+                        <Link to="/register" className="font-medium text-pink-600">
                             Registrarse
                         </Link>
                     </Typography>

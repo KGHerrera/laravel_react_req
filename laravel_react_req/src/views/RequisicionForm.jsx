@@ -56,6 +56,13 @@ export default function RequisicionForm() {
   const onSubmit = (ev) => {
     ev.preventDefault();
 
+    if (requisicion.descripcion.trim().length < 10) {
+      setErrors({
+        ...errors,
+        descripcion: 'La descripción debe tener al menos 10 caracteres'
+      });
+      return;
+    }
 
 
     if (requisicion.id_requisicion) {
@@ -73,7 +80,7 @@ export default function RequisicionForm() {
       requisicion.id_usuario = user.id;
       axiosClient.post('/requisiciones', requisicion)
         .then(() => {
-          navigate('/requisiciones');
+          navigate('/requisiciones', { state: { successMessage: 'La acción se completó con éxito' } });
         })
         .catch((err) => {
           const response = err.response;
@@ -86,11 +93,7 @@ export default function RequisicionForm() {
 
   const handleChangeDescripcion = (ev) => {
     setRequisicion({ ...requisicion, descripcion: ev.target.value });
-    if (ev.target.value.length >= 10) {
-      setErrors({ ...errors, descripcion: '' });
-    } else {
-      setErrors({ ...errors, descripcion: 'La descripción debe tener al menos 10 caracteres.' });
-    }
+
   };
 
   const handleChangeCostoEstimado = (ev) => {
@@ -117,25 +120,25 @@ export default function RequisicionForm() {
 
         <Card className="max-w-md shadow-lg p-8" style={{ width: '360px' }}>
 
-         
-            <CardHeader
-              variant="filled"
-              color="gray"
-              className="grid m-0 mb-8 h-24 w-full place-items-center"
-            >
-              <Typography variant="h4" color="white" className="text-center">
 
-              
+          <CardHeader
+            variant="filled"
+            color="gray"
+            className="grid m-0 mb-8 h-24 w-full place-items-center"
+          >
+            <Typography variant="h4" color="white" className="text-center">
+
+
 
               {requisicion.id_requisicion && "Editar requisición" || "Nueva requisición"}
 
-                </Typography>
-            </CardHeader>
+            </Typography>
+          </CardHeader>
 
-          
 
-            
-          
+
+
+
 
 
           {loading && <div>Loading...</div>}
@@ -153,7 +156,7 @@ export default function RequisicionForm() {
                   value={requisicion.estado}
                   onChange={(val) => setRequisicion({ ...requisicion, estado: val })}
                   label="Estado"
-                  
+
                 >
                   <Option value="pendiente">Pendiente</Option>
                   <Option value="autorizada">Autorizada</Option>
@@ -182,10 +185,10 @@ export default function RequisicionForm() {
                     label="Descripción"
                     onChange={(ev) => handleChangeDescripcion(ev)}
                     placeholder=""
-                    className="input"                    
+                    className="input"
 
                   />
-                  {errors.descripcion && <p className="text-red-500 text-xs">{errors.descripcion}</p>}
+                  {errors.descripcion && <p className="text-pink-500 text-xs">{errors.descripcion}</p>}
                 </div>
 
                 <div>
@@ -199,13 +202,13 @@ export default function RequisicionForm() {
                     className="input"
                     icon={<i className="fa fa-dollar" />}
                   />
-                  {errors.costo_estimado && <p className="text-red-500 text-xs">{errors.costo_estimado}</p>}
+                  {errors.costo_estimado && <p className="text-pink-500 text-xs mt-2">{errors.costo_estimado}</p>}
                 </div>
 
                 {requisicion.id_requisicion &&
                   <Input
                     label="Evidencia de Entrega"
-                    
+
                     type="file"
                     className="file-select"
 
@@ -219,7 +222,7 @@ export default function RequisicionForm() {
               </div>
 
               <div className="flex flex-row mt-6 gap-2">
-                <Button type="submit" className="bg-pink-800" variant="filled" fullWidth>
+                <Button type="submit" color='pink' variant="filled" fullWidth>
                   Guardar
                 </Button>
 

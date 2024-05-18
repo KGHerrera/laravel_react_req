@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('fecha_solicitud');
             $table->enum('estado', ['pendiente', 'autorizada', 'rechazada', 'completada'])->default('pendiente');
             $table->text('descripcion')->nullable();
-            $table->text('motivo_rechazo')->nullable();
+            $table->text('motivo_rechazo')->default('sin revisar');
             $table->binary('evidencia_entrega')->nullable();
             $table->decimal('costo_estimado', 10, 2)->nullable();
             $table->timestamps();

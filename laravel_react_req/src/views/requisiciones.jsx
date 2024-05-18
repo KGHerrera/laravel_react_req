@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import axiosClient from '../axiosClient';
 import { Card, CardBody, CardHeader, IconButton, Typography, Tooltip, Chip, Input, Button } from "@material-tailwind/react";
 import { MagnifyingGlassIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
@@ -14,8 +14,15 @@ const Requisiciones = () => {
   const [loading, setLoading] = useState(false);
   const [selectedState, setSelectedState] = useState('');
   const [isCardView, setIsCardView] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredRequisiciones, setFilteredRequisiciones] = useState([]);
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  const location = useLocation();
+  const { state } = location;
+  let successMessage = state && state.successMessage ? state.successMessage : null;
+  const navigate = useNavigate();
 
   const openModal = () => {
     setModalIsOpen(true);
@@ -26,9 +33,14 @@ const Requisiciones = () => {
   };
 
 
-
   useEffect(() => {
     obtenerRequisiciones();
+
+    if (location.state && location.state.successMessage) {
+      successMessage = location.state.successMessage;
+
+      
+  }
   }, []);
 
   const onDeleteClick = requisicion => {
@@ -41,11 +53,14 @@ const Requisiciones = () => {
       });
   };
 
+
+
   const obtenerRequisiciones = () => {
     setLoading(true);
     axiosClient.get('/requisiciones')
       .then(({ data }) => {
         setRequisiciones(data);
+        setFilteredRequisiciones(data);
         setLoading(false);
       })
       .catch(() => {
@@ -53,9 +68,6 @@ const Requisiciones = () => {
       });
   };
 
-  const filtrarPorEstado = estado => {
-
-  };
 
   const renderizarColorEstado = estado => {
     switch (estado) {
@@ -72,15 +84,34 @@ const Requisiciones = () => {
     }
   };
 
-  const requisicionesFiltradas = selectedState
-    ? requisiciones.filter(requisicion => requisicion.estado === selectedState)
-    : requisiciones;
+  const filtrarRequisiciones = (value) => {
+    setSearchTerm(value);
+    const filteredData = requisiciones.filter((requisicion) => {
+      const searchText = value.toLowerCase();
+      // Search in all relevant fields (you can adjust these fields as needed)
+      return (
+        requisicion.id_requisicion.toString().toLowerCase().includes(searchText) ||
+        requisicion.user.toLowerCase().includes(searchText) ||
+        requisicion.fecha_solicitud.toLowerCase().includes(searchText) ||
+        requisicion.estado.toLowerCase().includes(searchText) ||
+        (requisicion.motivo_rechazo && requisicion.motivo_rechazo.toLowerCase().includes(searchText)) ||
+        requisicion.descripcion.toLowerCase().includes(searchText) ||
+        requisicion.costo_estimado.toString().toLowerCase().includes(searchText) ||
+        (requisicion.evidencia_entrega && requisicion.evidencia_entrega.toLowerCase().includes(searchText))
+      );
+    });
+    setFilteredRequisiciones(filteredData); // Update filtered data state
+  };
+
+
 
   const renderizarRequisicionCard = (requisicion) => (
     <Card variant='gradient' className="w-full rounded-md shadow-none" key={requisicion.id_requisicion}>
 
 
       <CardBody className="px-4 flex gap-4 flex-col">
+
+
 
 
 
@@ -161,11 +192,13 @@ const Requisiciones = () => {
               <div className="flex w-full gap-2 sm:w-max sm:flex-nowrap flex-wrap">
 
                 <Input
-                  label="Search"
+                  label="Buscar"
                   icon={<MagnifyingGlassIcon className="h-5 w-5" />}
+                  value={searchTerm}
+                  onChange={(e) => filtrarRequisiciones(e.target.value)}
                 />
                 <Link to="/requisiciones/nueva">
-                  <IconButton variant='filled' className='bg-pink-800'><FiPlus className="h-5 w-5 font-bold"></FiPlus></IconButton>
+                  <IconButton variant='filled' color='pink'><FiPlus className="h-5 w-5 font-bold"></FiPlus></IconButton>
                 </Link>
 
                 <div>
@@ -176,12 +209,20 @@ const Requisiciones = () => {
 
               </div>
             </div>
+
+            
+              {/* Mostrar el mensaje de éxito si está presente */}
+              {successMessage && <div className='w-full bg-green-500 rounded mt-4 py-3 text-center text-white'>{successMessage}</div>}
+              {/* El resto de tu contenido de la página de requisiciones */}
+    
           </CardHeader>
           <CardBody className="px-0 overflow-auto">
 
+
+
             {isCardView ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-2">
-                {requisicionesFiltradas.map(renderizarRequisicionCard)}
+                {filteredRequisiciones.map(renderizarRequisicionCard)}
               </div>
             ) : (
 
@@ -236,7 +277,7 @@ const Requisiciones = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {requisicionesFiltradas.map(requisicion => (
+                  {filteredRequisiciones.map(requisicion => (
                     <tr key={requisicion.id_requisicion} className='text-sm'>
                       <td className="px-4 py-2">{requisicion.id_requisicion}</td>
                       <td className="px-4 py-2">{requisicion.user}</td>
@@ -281,10 +322,6 @@ const Requisiciones = () => {
                 </tbody>
               </table>)}
           </CardBody>
-
-
-
-
         </Card>
       </div>
     </>
