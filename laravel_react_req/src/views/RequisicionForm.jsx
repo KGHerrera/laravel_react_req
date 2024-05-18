@@ -68,7 +68,7 @@ export default function RequisicionForm() {
     if (requisicion.id_requisicion) {
       axiosClient.put(`/requisiciones/${requisicion.id_requisicion}`, requisicion)
         .then(() => {
-          navigate('/requisiciones');
+          navigate('/requisiciones', { state: { successMessage: 'La acción se completó con éxito' } });
         })
         .catch((err) => {
           const response = err.response;

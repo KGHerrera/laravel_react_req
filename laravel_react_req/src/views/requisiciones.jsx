@@ -7,6 +7,7 @@ import { NavbarSimple } from '../Components/NavBarSimple';
 import { FiPlus } from "react-icons/fi";
 import ModalCustom from '../Components/ModalCustom';
 import { BsGrid } from "react-icons/bs";
+import Swal from 'sweetalert2';
 
 
 const Requisiciones = () => {
@@ -37,20 +38,47 @@ const Requisiciones = () => {
     obtenerRequisiciones();
 
     if (location.state && location.state.successMessage) {
-      successMessage = location.state.successMessage;
+      Swal.fire({
+        icon: 'success',
+        title: 'Éxito',
+        text: location.state.successMessage,
+        confirmButtonText: 'OK'
+      });
 
-      
-  }
+      navigate(location.requisiciones, { replace: true });
+    }
   }, []);
 
   const onDeleteClick = requisicion => {
-    if (!window.confirm("Are you sure you want to delete this requisicion?")) {
-      return;
-    }
-    axiosClient.delete(`/requisiciones/${requisicion.id_requisicion}`)
-      .then(() => {
-        obtenerRequisiciones();
-      });
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¡No podrás revertir esto!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, borrar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axiosClient.delete(`/requisiciones/${requisicion.id_requisicion}`)
+          .then(() => {
+            obtenerRequisiciones();
+            Swal.fire(
+              '¡Borrado!',
+              'La requisición ha sido borrada.',
+              'success'
+            );
+          })
+          .catch(error => {
+            Swal.fire(
+              'Error',
+              'Hubo un problema al borrar la requisición.',
+              'error'
+            );
+          });
+      }
+    });
   };
 
 
@@ -210,11 +238,6 @@ const Requisiciones = () => {
               </div>
             </div>
 
-            
-              {/* Mostrar el mensaje de éxito si está presente */}
-              {successMessage && <div className='w-full bg-green-500 rounded mt-4 py-3 text-center text-white'>{successMessage}</div>}
-              {/* El resto de tu contenido de la página de requisiciones */}
-    
           </CardHeader>
           <CardBody className="px-0 overflow-auto">
 
