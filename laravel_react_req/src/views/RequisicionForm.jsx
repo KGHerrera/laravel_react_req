@@ -11,13 +11,15 @@ import {
   Option,
   Textarea,
   CardHeader,
+  Spinner,
 } from "@material-tailwind/react";
 
-export default function RequisicionForm() {
-  const { id } = useParams();
+export default function RequisicionForm({id, closeModal, obtenerRequisiciones, onSuccess}) {
+  
   const navigate = useNavigate();
   const { user } = useStateContext();
 
+  const [loadingData, setLoadingData] = useState(false);
   const today = new Date().toISOString().split('T')[0];
 
   const [requisicion, setRequisicion] = useState({
@@ -64,31 +66,48 @@ export default function RequisicionForm() {
       return;
     }
 
-
+    setLoadingData(true);
     if (requisicion.id_requisicion) {
       axiosClient.put(`/requisiciones/${requisicion.id_requisicion}`, requisicion)
         .then(() => {
-          navigate('/requisiciones', { state: { successMessage: 'La acción se completó con éxito' } });
+          // navigate('/requisiciones', { state: { successMessage: 'Requisicion actualizada con exito' } });
+          setLoadingData(false);
+          closeModal()
+          onSuccess('Requisición actualizada con éxito');
+          obtenerRequisiciones()
         })
         .catch((err) => {
           const response = err.response;
           if (response && response.status === 422) {
             setErrors(response.data.errors);
           }
+
+          setLoadingData(false);
+          
         });
     } else {
       requisicion.id_usuario = user.id;
       axiosClient.post('/requisiciones', requisicion)
         .then(() => {
-          navigate('/requisiciones', { state: { successMessage: 'La acción se completó con éxito' } });
+          //navigate('/requisiciones', { state: { successMessage: 'Requisicion creada con exito' } });
+          setLoadingData(false);
+          closeModal()
+          onSuccess('Requisición agregada con éxito');
+          
+          obtenerRequisiciones()
         })
         .catch((err) => {
           const response = err.response;
           if (response && response.status === 422) {
             setErrors(response.data.errors);
           }
+          setLoadingData(false);
+          
         });
+
     }
+
+    c
   };
 
   const handleChangeDescripcion = (ev) => {
@@ -116,7 +135,10 @@ export default function RequisicionForm() {
   return (
     <>
 
-      <div className="flex justify-center items-center min-h-screen bg-gray-900">
+      
+
+
+        
 
         <Card className="max-w-md shadow-lg p-8" style={{ width: '360px' }}>
 
@@ -222,18 +244,33 @@ export default function RequisicionForm() {
               </div>
 
               <div className="flex flex-row mt-6 gap-2">
-                <Button type="submit" color='pink' variant="filled" fullWidth>
-                  Guardar
-                </Button>
 
-                <Button variant="filled" className="" fullWidth onClick={handleCancelar}>
+
+
+                {loadingData ?
+
+                  <Button color='pink' variant="filled" fullWidth className="flex justify-center">
+                    <Spinner className="h-4" color="white"></Spinner>
+                  </Button>
+                  :
+
+                  <Button type="submit" color='pink' variant="filled" fullWidth>
+                    Guardar
+                  </Button>
+
+                }
+
+
+
+
+                <Button variant="filled" className="" fullWidth onClick={closeModal}>
                   Cancelar
                 </Button>
               </div>
             </form>
           )}
         </Card>
-      </div>
+     
     </>
 
   );

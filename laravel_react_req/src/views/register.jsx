@@ -6,22 +6,36 @@ import {
     Button,
     Typography,
     CardHeader,
+    Spinner,
 } from "@material-tailwind/react";
 import axiosClient from '../axiosClient';
 import { useStateContext } from '../contexts/contextprovider';
 import '../index.css';
 
+import ReCAPTCHA from "react-google-recaptcha";
+
 const Register = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [passwordMatch, setPasswordMatch] = useState('');
     const { setUser, setToken } = useStateContext();
     const [errors, setErrors] = useState('');
+    const [recaptchaToken, setRecaptchaToken] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
         let errors = {}; // Objeto para almacenar los errores
+
+        if (!recaptchaToken) {
+            errors.captcha = "Por favor verifica el captcha.";
+        }
+
+        if (passwordMatch !== password) {
+            errors.passwordMatch = "Las contraseñas no coinciden.";
+        }
 
         // Verificar si el campo de correo electrónico está vacío
         if (!email) {
@@ -51,13 +65,18 @@ const Register = () => {
         const payload = {
             name: name,
             email: email,
-            password: password
+            password: password,
+            captcha: recaptchaToken
         };
+
+        setLoading(true);
 
         axiosClient.post("/register", payload)
             .then(({ data }) => {
+
                 setUser(data.user);
                 setToken(data.token);
+
             })
             .catch(err => {
                 const response = err.response;
@@ -66,8 +85,14 @@ const Register = () => {
                     setErrors(response.data.errors);
                 }
 
+                setLoading(false)
+
 
             });
+    };
+
+    const onCaptchaChange = (value) => {
+        setRecaptchaToken(value);
     };
 
     return (
@@ -142,10 +167,55 @@ const Register = () => {
 
                         </div>
 
+                        <div>
+
+                            <Input
+                                size="lg"
+                                type="password"
+                                placeholder="********"
+                                label="Confirmar contraseña"
+                                value={passwordMatch}
+                                onChange={(e) => setPasswordMatch(e.target.value)}
+                                icon={<i className="fa fa-lock" />}
+                            />
+
+                            {errors && errors.passwordMatch && (
+
+                                <p className="text-pink-600 text-xs mt-1">{errors.passwordMatch}</p>
+
+                            )}
+
+                        </div>
+
+
+                        <div>
+                            <ReCAPTCHA sitekey="6LfIiRopAAAAAMqzFNtpvvztFXQMjv0vEyk3HIbz" onChange={onCaptchaChange}></ReCAPTCHA>
+                            {errors && errors.password && (
+
+                                <p className="text-pink-600 text-xs mt-1">{errors.captcha}</p>
+
+                            )}
+                        </div>
                     </div>
-                    <Button type="submit" color='pink' className="mt-6" fullWidth>
-                        Registrarse
-                    </Button>
+
+                    
+
+                    <div className='flex justify-center'>
+                        {loading ?
+                            <Button color='pink' variant="filled" fullWidth className="flex justify-center">
+                                <Spinner className="h-4" color="white"></Spinner>
+                            </Button>
+                            :
+
+                            <Button type="submit" color='pink'  fullWidth>
+                                Registrarse
+                            </Button>
+
+                        }
+                    </div>
+
+
+
                     <Typography color="gray" variant='small' className="mt-4 text-center font-normal">
                         ¿Ya tienes una cuenta?{" "}
                         <Link to="/login" className="font-medium text-pink-600">

@@ -8,6 +8,7 @@ import { FiPlus } from "react-icons/fi";
 import ModalCustom from '../Components/ModalCustom';
 import { BsGrid } from "react-icons/bs";
 import Swal from 'sweetalert2';
+import RequisicionForm from './RequisicionForm';
 
 
 const Requisiciones = () => {
@@ -18,15 +19,18 @@ const Requisiciones = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredRequisiciones, setFilteredRequisiciones] = useState([]);
 
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const location = useLocation();
   const { state } = location;
-  let successMessage = state && state.successMessage ? state.successMessage : null;
+  const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
 
-  const openModal = () => {
-    setModalIsOpen(true);
+  const [id, setId] = useState(null);
+
+  const openModal = (id_req) => {
+    setIsOpen(true);
+    setId(id_req);
   };
 
   const closeModal = () => {
@@ -34,20 +38,26 @@ const Requisiciones = () => {
   };
 
 
+
+
   useEffect(() => {
     obtenerRequisiciones();
-
-    if (location.state && location.state.successMessage) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Éxito',
-        text: location.state.successMessage,
-        confirmButtonText: 'OK'
-      });
-
-      navigate(location.requisiciones, { replace: true });
-    }
   }, []);
+
+  const showSuccessMessage = (message) => {
+    Swal.fire({
+      icon: 'success',
+      title: 'Éxito',
+      text: message,
+      confirmButtonText: 'OK'
+    });
+
+    setSuccessMessage('');
+  };
+
+  const handleSuccess = (message) => {
+    setSuccessMessage(message);
+  };
 
   const onDeleteClick = requisicion => {
     Swal.fire({
@@ -196,12 +206,16 @@ const Requisiciones = () => {
     setIsCardView((prev) => !prev); // Cambiar el estado opuesto al estado actual
   };
 
-
-
   return (
     <>
       <div className='min-h-screen from-gray-900 bg-gradient-to-b to-gray-900 p-4 sm:p-8 flex justify-center items-center'>
 
+        <ModalCustom closeModal={() => setIsOpen(false)} isOpen={isOpen}>
+          <RequisicionForm obtenerRequisiciones={obtenerRequisiciones} id={id} closeModal={() => setIsOpen(false)} onSuccess={handleSuccess}></RequisicionForm>
+
+        </ModalCustom>
+
+        {successMessage && showSuccessMessage(successMessage)}
 
         <Card className="h-full w-full p-2 min-h-screen">
           <NavbarSimple />
@@ -225,9 +239,9 @@ const Requisiciones = () => {
                   value={searchTerm}
                   onChange={(e) => filtrarRequisiciones(e.target.value)}
                 />
-                <Link to="/requisiciones/nueva">
-                  <IconButton variant='filled' color='pink'><FiPlus className="h-5 w-5 font-bold"></FiPlus></IconButton>
-                </Link>
+                <div>
+                  <IconButton variant='filled' color='pink' onClick={openModal}><FiPlus className="h-5 w-5 font-bold"></FiPlus></IconButton>
+                </div>
 
                 <div>
                   <IconButton onClick={toggleView}>
@@ -324,12 +338,17 @@ const Requisiciones = () => {
                       </td>
                       <td className="px-4 py-2">
                         <Tooltip content="Editar requisición">
-                          <Link to={`/requisiciones/${requisicion.id_requisicion}`}>
+                          {/* <Link to={`/requisiciones/${requisicion.id_requisicion}`}>
                             <IconButton variant="text">
 
                               <PencilIcon className="h-4 w-4" />
                             </IconButton>
-                          </Link>
+                          </Link> */}
+
+                          <IconButton variant="text" onClick={() => openModal(requisicion.id_requisicion)} >
+
+                            <PencilIcon className="h-4 w-4" />
+                          </IconButton>
                         </Tooltip>
 
                         <Tooltip content="Eliminar requisición">

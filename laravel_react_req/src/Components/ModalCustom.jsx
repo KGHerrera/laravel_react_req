@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IconButton } from '@material-tailwind/react';
 
 const ModalCustom = ({ isOpen, closeModal, children }) => {
+    const modalRef = useRef(null);
+
     const handleClickOutside = (e) => {
-        if (e.target === e.currentTarget) {
+        if (modalRef.current && !modalRef.current.contains(e.target)) {
             closeModal();
         }
     };
@@ -18,9 +20,10 @@ const ModalCustom = ({ isOpen, closeModal, children }) => {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
                     className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-40 z-10"
-                    onClick={handleClickOutside}
+                    onMouseDown={handleClickOutside}
                 >
                     <motion.div
+                        ref={modalRef}
                         initial={{ y: -50 }}
                         animate={{ y: 0 }}
                         exit={{ y: -50 }}
@@ -41,5 +44,6 @@ const ModalCustom = ({ isOpen, closeModal, children }) => {
 };
 
 export default ModalCustom;
+
 
 
