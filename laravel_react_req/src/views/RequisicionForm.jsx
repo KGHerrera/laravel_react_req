@@ -14,8 +14,8 @@ import {
   Spinner,
 } from "@material-tailwind/react";
 
-export default function RequisicionForm({id, closeModal, obtenerRequisiciones, onSuccess}) {
-  
+export default function RequisicionForm({ id, closeModal, obtenerRequisiciones, onSuccess }) {
+
   const navigate = useNavigate();
   const { user } = useStateContext();
 
@@ -67,14 +67,43 @@ export default function RequisicionForm({id, closeModal, obtenerRequisiciones, o
     }
 
     setLoadingData(true);
+
+    if (requisicion.evidencia_entrega) {
+      const formData = new FormData();
+      formData.append('image', requisicion.evidencia_entrega);
+
+      axiosClient.post('/uploadImage', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+        .then((response) => {
+          const image_url = response.data.image_url;
+
+          // Actualiza la requisición con la URL de la imagen
+          updateRequisicion(image_url);
+        })
+        .catch((error) => {
+          console.error('Error al subir la imagen:', error);
+          setLoadingData(false);
+          // Manejar el error de subida de imagen
+        });
+    } else {
+      // No hay imagen para subir, solo actualizar los datos de la requisición
+      updateRequisicion('');
+    }
+  };
+
+  const updateRequisicion = (image_url) => {
     if (requisicion.id_requisicion) {
+      requisicion.evidencia_entrega = image_url;
+
       axiosClient.put(`/requisiciones/${requisicion.id_requisicion}`, requisicion)
         .then(() => {
-          // navigate('/requisiciones', { state: { successMessage: 'Requisicion actualizada con exito' } });
           setLoadingData(false);
-          closeModal()
+          closeModal();
           onSuccess('Requisición actualizada con éxito');
-          obtenerRequisiciones()
+          obtenerRequisiciones();
         })
         .catch((err) => {
           const response = err.response;
@@ -83,18 +112,17 @@ export default function RequisicionForm({id, closeModal, obtenerRequisiciones, o
           }
 
           setLoadingData(false);
-          
         });
     } else {
       requisicion.id_usuario = user.id;
+      requisicion.evidencia_entrega = image_url;
+
       axiosClient.post('/requisiciones', requisicion)
         .then(() => {
-          //navigate('/requisiciones', { state: { successMessage: 'Requisicion creada con exito' } });
           setLoadingData(false);
-          closeModal()
+          closeModal();
           onSuccess('Requisición agregada con éxito');
-          
-          obtenerRequisiciones()
+          obtenerRequisiciones();
         })
         .catch((err) => {
           const response = err.response;
@@ -102,13 +130,10 @@ export default function RequisicionForm({id, closeModal, obtenerRequisiciones, o
             setErrors(response.data.errors);
           }
           setLoadingData(false);
-          
         });
-
     }
-
-    c
   };
+
 
   const handleChangeDescripcion = (ev) => {
     setRequisicion({ ...requisicion, descripcion: ev.target.value });
@@ -135,142 +160,142 @@ export default function RequisicionForm({id, closeModal, obtenerRequisiciones, o
   return (
     <>
 
-      
-
-
-        
-
-        <Card className="max-w-md shadow-lg p-8" style={{ width: '360px' }}>
-
-
-          <CardHeader
-            variant="filled"
-            color="gray"
-            className="grid m-0 mb-8 h-24 w-full place-items-center"
-          >
-            <Typography variant="h4" color="white" className="text-center">
-
-
-
-              {requisicion.id_requisicion && "Editar requisición" || "Nueva requisición"}
-
-            </Typography>
-          </CardHeader>
 
 
 
 
 
+      <Card className="max-w-md shadow-lg p-8" style={{ width: '360px' }}>
 
 
-          {loading && <div>Loading...</div>}
-          {/* {errors && (
+        <CardHeader
+          variant="filled"
+          color="gray"
+          className="grid m-0 mb-8 h-24 w-full place-items-center"
+        >
+          <Typography variant="h4" color="white" className="text-center">
+
+
+
+            {requisicion.id_requisicion && "Editar requisición" || "Nueva requisición"}
+
+          </Typography>
+        </CardHeader>
+
+
+
+
+
+
+
+        {loading && <div>Loading...</div>}
+        {/* {errors && (
             <div className="alert">
               {Object.keys(errors).map((key) => (
                 <p key={key}>{errors[key][0]}</p>
               ))}
             </div>
           )} */}
-          {!loading && (
-            <form onSubmit={onSubmit}>
-              <div className="flex flex-col gap-6">
-                <Select
-                  value={requisicion.estado}
-                  onChange={(val) => setRequisicion({ ...requisicion, estado: val })}
-                  label="Estado"
+        {!loading && (
+          <form onSubmit={onSubmit}>
+            <div className="flex flex-col gap-6">
+              <Select
+                value={requisicion.estado}
+                onChange={(val) => setRequisicion({ ...requisicion, estado: val })}
+                label="Estado"
 
-                >
-                  <Option value="pendiente">Pendiente</Option>
-                  <Option value="autorizada">Autorizada</Option>
-                  <Option value="rechazada">Rechazada</Option>
-                  <Option value="completada">Completada</Option>
-                </Select>
+              >
+                <Option value="pendiente">Pendiente</Option>
+                <Option value="autorizada">Autorizada</Option>
+                <Option value="rechazada">Rechazada</Option>
+                <Option value="completada">Completada</Option>
+              </Select>
 
 
 
-                {requisicion.estado === 'rechazada' &&
-                  <Input
-                    label="Motivo de rechazo"
-                    value={requisicion.motivo_rechazo || ''}
-                    onChange={(ev) =>
-                      setRequisicion({ ...requisicion, motivo_rechazo: ev.target.value })
-                    }
-                    placeholder="Motivo de Rechazo"
-                    className="input"
-                    icon={<i className="fa fa-exclamation" />}
+              {requisicion.estado === 'rechazada' &&
+                <Input
+                  label="Motivo de rechazo"
+                  value={requisicion.motivo_rechazo || ''}
+                  onChange={(ev) =>
+                    setRequisicion({ ...requisicion, motivo_rechazo: ev.target.value })
+                  }
+                  placeholder="Motivo de Rechazo"
+                  className="input"
+                  icon={<i className="fa fa-exclamation" />}
 
-                  />
-                }
-                <div>
-                  <Textarea
-                    value={requisicion.descripcion}
-                    label="Descripción"
-                    onChange={(ev) => handleChangeDescripcion(ev)}
-                    placeholder=""
-                    className="input"
+                />
+              }
+              <div>
+                <Textarea
+                  value={requisicion.descripcion}
+                  label="Descripción"
+                  onChange={(ev) => handleChangeDescripcion(ev)}
+                  placeholder=""
+                  className="input"
 
-                  />
-                  {errors.descripcion && <p className="text-pink-500 text-xs">{errors.descripcion}</p>}
-                </div>
-
-                <div>
-                  <Input
-                    value={requisicion.costo_estimado}
-                    label="Costo Estimado"
-                    onChange={(ev) =>
-                      handleChangeCostoEstimado(ev)
-                    }
-                    placeholder="Costo Estimado"
-                    className="input"
-                    icon={<i className="fa fa-dollar" />}
-                  />
-                  {errors.costo_estimado && <p className="text-pink-500 text-xs mt-2">{errors.costo_estimado}</p>}
-                </div>
-
-                {requisicion.id_requisicion &&
-                  <Input
-                    label="Evidencia de Entrega"
-
-                    type="file"
-                    className="file-select"
-
-                    onChange={(ev) =>
-                      setRequisicion({ ...requisicion, evidencia_entrega: ev.target.files[0] })
-                    }
-                    variant="outlined"
-                  />
-
-                }
+                />
+                {errors.descripcion && <p className="text-pink-500 text-xs">{errors.descripcion}</p>}
               </div>
 
-              <div className="flex flex-row mt-6 gap-2">
+              <div>
+                <Input
+                  value={requisicion.costo_estimado}
+                  label="Costo Estimado"
+                  onChange={(ev) =>
+                    handleChangeCostoEstimado(ev)
+                  }
+                  placeholder="Costo Estimado"
+                  className="input"
+                  icon={<i className="fa fa-dollar" />}
+                />
+                {errors.costo_estimado && <p className="text-pink-500 text-xs mt-2">{errors.costo_estimado}</p>}
+              </div>
+
+              {requisicion.id_requisicion &&
+                <Input
+                  label="Evidencia de Entrega"
+
+                  type="file"
+                  className="file-select"
+
+                  onChange={(ev) =>
+                    setRequisicion({ ...requisicion, evidencia_entrega: ev.target.files[0] })
+                  }
+                  variant="outlined"
+                />
+
+              }
+            </div>
+
+            <div className="flex flex-row mt-6 gap-2">
 
 
 
-                {loadingData ?
+              {loadingData ?
 
-                  <Button color='pink' variant="filled" fullWidth className="flex justify-center">
-                    <Spinner className="h-4" color="white"></Spinner>
-                  </Button>
-                  :
-
-                  <Button type="submit" color='pink' variant="filled" fullWidth>
-                    Guardar
-                  </Button>
-
-                }
-
-
-
-
-                <Button variant="filled" className="" fullWidth onClick={closeModal}>
-                  Cancelar
+                <Button color='pink' variant="filled" fullWidth className="flex justify-center">
+                  <Spinner className="h-4" color="white"></Spinner>
                 </Button>
-              </div>
-            </form>
-          )}
-        </Card>
-     
+                :
+
+                <Button type="submit" color='pink' variant="filled" fullWidth>
+                  Guardar
+                </Button>
+
+              }
+
+
+
+
+              <Button variant="filled" className="" fullWidth onClick={closeModal}>
+                Cancelar
+              </Button>
+            </div>
+          </form>
+        )}
+      </Card>
+
     </>
 
   );

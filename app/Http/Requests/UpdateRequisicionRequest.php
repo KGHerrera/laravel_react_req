@@ -29,7 +29,7 @@ class UpdateRequisicionRequest extends FormRequest
             'estado' => 'required|in:pendiente,autorizada,rechazada,completada',
             'descripcion' => 'string',
             'motivo_rechazo' => 'nullable|string',
-            'evidencia_entrega' => 'nullable|file',
+            'evidencia_entrega' => 'nullable|string',
             'costo_estimado' => 'numeric',
         ];
     }
@@ -50,7 +50,7 @@ class UpdateRequisicionRequest extends FormRequest
             'estado.in' => 'El estado debe ser uno de: pendiente, autorizada, rechazada, completada.',
             'descripcion.string' => 'La descripción debe ser una cadena de caracteres.',
             'motivo_rechazo.string' => 'El motivo de rechazo debe ser una cadena de caracteres.',
-            'evidencia_entrega.file' => 'La evidencia de entrega debe ser un archivo.',
+            'evidencia_entrega.string' => 'La evidencia de entrega debe ser un archivo.',
             'costo_estimado.numeric' => 'El costo estimado debe ser un valor numérico.',
         ];
     }

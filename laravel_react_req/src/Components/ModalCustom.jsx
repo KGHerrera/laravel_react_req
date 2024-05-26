@@ -30,11 +30,11 @@ const ModalCustom = ({ isOpen, closeModal, children }) => {
                         transition={{ type: 'spring', stiffness: 300 }}
                         className="bg-white rounded shadow-md relative"
                     >
-                        <div className='flex justify-end w-full'>
+                        {/* <div className='flex justify-end w-full'>
                             <IconButton variant='text' onClick={closeModal} className="text-gray-600 hover:text-gray-800">
                                 <span className='fa fa-close'></span>
                             </IconButton>
-                        </div>
+                        </div> */}
                         {children}
                     </motion.div>
                 </motion.div>

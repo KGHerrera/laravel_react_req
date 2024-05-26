@@ -7,7 +7,7 @@ use App\Http\Requests\UpdateRequisicionRequest;
 use App\Http\Resources\RequisicionResource;
 use App\Models\Requisicion;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class RequisicionesController extends Controller
 {
@@ -44,28 +44,45 @@ class RequisicionesController extends Controller
     public function uploadImage(Request $request)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // ajusta las reglas de validación según tus necesidades
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Ajusta las reglas de validación según tus necesidades
         ]);
 
+        // Obtiene el archivo de la solicitud
         $image = $request->file('image');
-        $imageName = 'requisicion_' . $request->id_requisicion . '.' . $image->getClientOriginalExtension();
 
-        $image->move(public_path('ruta/de/tu/carpeta/' . $request->id_requisicion), $imageName);
+        // Genera un nombre único para el archivo
+        $imageName = 'requisicion_' . time() . '.' . $image->getClientOriginalExtension();
 
-        $requisicion = Requisicion::find($request->id_requisicion);
-        $requisicion->evidencia_entrega = $imageName;
-        $requisicion->save();
+        // Guarda el archivo en el almacenamiento
+        $path = $image->storeAs('public/evidencias', $imageName);
 
-        return response()->json(['message' => 'Imagen subida exitosamente']);
+        // Devuelve la URL del archivo guardado
+        $url = Storage::url($path);
+
+        // Devuelve una respuesta JSON con la URL de la imagen
+        return response()->json(['image_url' => $url]);
     }
 
     public function update(UpdateRequisicionRequest $request, $id)
     {
+
+
         // Encontrar la requisición por su ID
         $requisicion = Requisicion::findOrFail($id);
 
         // Validar los datos recibidos del formulario
         $data = $request->validated();
+
+        // Verificar si se ha enviado una imagen
+        if ($request->hasFile('evidencia_entrega')) {
+            // Guardar la imagen
+            $image = $request->file('evidencia_entrega');
+            $imageName = 'requisicion_' . $requisicion->id . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('evidencias/' . $requisicion->id), $imageName);
+
+            // Actualizar el campo de evidencia de entrega en la requisición
+            $data['evidencia_entrega'] = $imageName;
+        }
 
         // Actualizar los datos de la requisición
         $requisicion->update($data);

@@ -153,9 +153,9 @@ const Requisiciones = () => {
 
 
 
-        <CardHeader className='w-full bg-gray-900 text-white flex justify-center items-center h-40 m-0'>
+        <CardHeader className='w-full bg-gray-900 rounded-sm text-white flex justify-center items-center h-40 m-0'>
           {requisicion.evidencia_entrega ?
-            'evidencia subida' : 'sin evidencia'
+            <img src={"http://127.0.0.1:8000" + requisicion.evidencia_entrega}  alt="" /> : 'sin evidencia'
           }
 
         </CardHeader>
@@ -182,16 +182,16 @@ const Requisiciones = () => {
 
         <div className='flex justify-end gap-4'>
 
-          <Link to={`/requisiciones/${requisicion.id_requisicion}`}>
-            <Button className='px-4' variant="text">
+         
+            <Button className='px-4' fullWidth variant="text" onClick={() => openModal(requisicion.id_requisicion)}>
 
               Editar
             </Button>
-          </Link>
+          
 
 
 
-          <Button variant="text" onClick={() => onDeleteClick(requisicion)}>
+          <Button variant="text" fullWidth onClick={() => onDeleteClick(requisicion)}>
 
             Eliminar
           </Button>
@@ -258,7 +258,7 @@ const Requisiciones = () => {
 
 
             {isCardView ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 p-2">
                 {filteredRequisiciones.map(renderizarRequisicionCard)}
               </div>
             ) : (
