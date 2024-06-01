@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import axiosClient from '../axiosClient';
-import { Card, CardBody, CardHeader, IconButton, Typography, Tooltip, Chip, Input, Button } from "@material-tailwind/react";
+import { Card, CardBody, CardHeader, IconButton, Typography, Tooltip, Chip, Input, Button, Spinner } from "@material-tailwind/react";
 import { MagnifyingGlassIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { NavbarSimple } from '../Components/NavBarSimple';
 import { FiPlus } from "react-icons/fi";
@@ -18,6 +18,7 @@ const Requisiciones = () => {
   const [isCardView, setIsCardView] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredRequisiciones, setFilteredRequisiciones] = useState([]);
+  const [loadingData, setLoadingData] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -41,6 +42,7 @@ const Requisiciones = () => {
 
 
   useEffect(() => {
+
     obtenerRequisiciones();
   }, []);
 
@@ -155,7 +157,7 @@ const Requisiciones = () => {
 
         <CardHeader className='w-full bg-gray-900 rounded-sm text-white flex justify-center items-center h-40 m-0'>
           {requisicion.evidencia_entrega ?
-            <img src={"http://127.0.0.1:8000" + requisicion.evidencia_entrega}  alt="" /> : 'sin evidencia'
+            <img src={"http://127.0.0.1:8000" + requisicion.evidencia_entrega} alt="" /> : 'sin evidencia'
           }
 
         </CardHeader>
@@ -182,12 +184,12 @@ const Requisiciones = () => {
 
         <div className='flex justify-end gap-4'>
 
-         
-            <Button className='px-4' fullWidth variant="text" onClick={() => openModal(requisicion.id_requisicion)}>
 
-              Editar
-            </Button>
-          
+          <Button className='px-4' fullWidth variant="text" onClick={() => openModal(requisicion.id_requisicion)}>
+
+            Editar
+          </Button>
+
 
 
 
@@ -253,117 +255,121 @@ const Requisiciones = () => {
             </div>
 
           </CardHeader>
-          <CardBody className="px-0 overflow-auto">
+          {!loading ?
+            <CardBody className="px-0 overflow-auto">
 
 
 
-            {isCardView ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 p-2">
-                {filteredRequisiciones.map(renderizarRequisicionCard)}
-              </div>
-            ) : (
+              {isCardView ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 p-2">
+                  {filteredRequisiciones.map(renderizarRequisicionCard)}
+                </div>
+              ) : (
 
-              <table className="w-full min-w-max table-auto text-left">
-                <thead>
-                  <tr>
-                    <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
-                      <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
-                        ID
-                      </Typography>
-                    </th>
-                    <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
-                      <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
-                        Usuario
-                      </Typography>
-                    </th>
-                    <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
-                      <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
-                        Solicitud
-                      </Typography>
-                    </th>
-                    <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
-                      <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
-                        Estado
-                      </Typography>
-                    </th>
-                    <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
-                      <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
-                        Motivo de rechazo
-                      </Typography>
-                    </th>
-                    <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
-                      <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
-                        Descripción
-                      </Typography>
-                    </th>
-                    <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
-                      <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
-                        Costo estimado
-                      </Typography>
-                    </th>
-                    <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
-                      <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
-                        Evidencia de entrega
-                      </Typography>
-                    </th>
-                    <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
-                      <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
-                        Acciones
-                      </Typography>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredRequisiciones.map(requisicion => (
-                    <tr key={requisicion.id_requisicion} className='text-sm'>
-                      <td className="px-4 py-2">{requisicion.id_requisicion}</td>
-                      <td className="px-4 py-2">{requisicion.user}</td>
-                      <td className="px-4 py-2">{requisicion.fecha_solicitud}</td>
-                      <td className="px-4 py-2">
-                        <Chip
+                <table className="w-full min-w-max table-auto text-left">
+                  <thead>
+                    <tr>
+                      <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                        <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
+                          ID
+                        </Typography>
+                      </th>
+                      <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                        <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
+                          Usuario
+                        </Typography>
+                      </th>
+                      <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                        <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
+                          Solicitud
+                        </Typography>
+                      </th>
+                      <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                        <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
+                          Estado
+                        </Typography>
+                      </th>
+                      <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                        <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
+                          Motivo de rechazo
+                        </Typography>
+                      </th>
+                      <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                        <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
+                          Descripción
+                        </Typography>
+                      </th>
+                      <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                        <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
+                          Costo estimado
+                        </Typography>
+                      </th>
+                      <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                        <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
+                          Evidencia de entrega
+                        </Typography>
+                      </th>
+                      <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                        <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
+                          Acciones
+                        </Typography>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredRequisiciones.map(requisicion => (
+                      <tr key={requisicion.id_requisicion} className='text-sm'>
+                        <td className="px-4 py-2">{requisicion.id_requisicion}</td>
+                        <td className="px-4 py-2">{requisicion.user}</td>
+                        <td className="px-4 py-2">{requisicion.fecha_solicitud}</td>
+                        <td className="px-4 py-2">
+                          <Chip
 
-                          variant="filled"
-                          value={requisicion.estado}
-                          color={renderizarColorEstado(requisicion.estado)}
-                          className='p-1 text-center'
-                        />
-                      </td>
-                      <td className="px-4 py-2">
-                        {requisicion.motivo_rechazo ? (requisicion.motivo_rechazo.length > 15 ? requisicion.motivo_rechazo.substring(0, 15) + '...' : requisicion.motivo_rechazo) : "Sin revisar"}
-                      </td>
-                      <td className="px-4 py-2">{requisicion.descripcion.length > 20 ? requisicion.descripcion.substring(0, 20) + '...' : requisicion.descripcion}</td>
-                      <td className="px-4 py-2">{requisicion.costo_estimado}</td>
-                      <td className="px-4 py-2">
-                        {requisicion.evidencia_entrega ? "Hay evidencia" : "No hay evidencia"}
-                      </td>
-                      <td className="px-4 py-2">
-                        <Tooltip content="Editar requisición">
-                          {/* <Link to={`/requisiciones/${requisicion.id_requisicion}`}>
+                            variant="filled"
+                            value={requisicion.estado}
+                            color={renderizarColorEstado(requisicion.estado)}
+                            className='p-1 text-center'
+                          />
+                        </td>
+                        <td className="px-4 py-2">
+                          {requisicion.motivo_rechazo ? (requisicion.motivo_rechazo.length > 15 ? requisicion.motivo_rechazo.substring(0, 15) + '...' : requisicion.motivo_rechazo) : "Sin revisar"}
+                        </td>
+                        <td className="px-4 py-2">{requisicion.descripcion.length > 20 ? requisicion.descripcion.substring(0, 20) + '...' : requisicion.descripcion}</td>
+                        <td className="px-4 py-2">{requisicion.costo_estimado}</td>
+                        <td className="px-4 py-2">
+                          {requisicion.evidencia_entrega ? "Hay evidencia" : "No hay evidencia"}
+                        </td>
+                        <td className="px-4 py-2">
+                          <Tooltip content="Editar requisición">
+                            {/* <Link to={`/requisiciones/${requisicion.id_requisicion}`}>
                             <IconButton variant="text">
 
                               <PencilIcon className="h-4 w-4" />
                             </IconButton>
                           </Link> */}
 
-                          <IconButton variant="text" onClick={() => openModal(requisicion.id_requisicion)} >
+                            <IconButton variant="text" onClick={() => openModal(requisicion.id_requisicion)} >
 
-                            <PencilIcon className="h-4 w-4" />
-                          </IconButton>
-                        </Tooltip>
+                              <PencilIcon className="h-4 w-4" />
+                            </IconButton>
+                          </Tooltip>
 
-                        <Tooltip content="Eliminar requisición">
-                          <IconButton variant="text" onClick={() => onDeleteClick(requisicion)}>
+                          <Tooltip content="Eliminar requisición">
+                            <IconButton variant="text" onClick={() => onDeleteClick(requisicion)}>
 
-                            <TrashIcon className="h-4 w-4" />
-                          </IconButton>
+                              <TrashIcon className="h-4 w-4" />
+                            </IconButton>
 
-                        </Tooltip>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>)}
-          </CardBody>
+                          </Tooltip>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>)}
+
+            </CardBody>
+            : <CardBody className="flex justify-center items-center h-max"><Spinner size="lg" variant="gradient" className='w-16 h-16' /></CardBody>
+          }
         </Card>
       </div>
     </>

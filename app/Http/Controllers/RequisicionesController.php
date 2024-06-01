@@ -43,25 +43,34 @@ class RequisicionesController extends Controller
 
     public function uploadImage(Request $request)
     {
-        $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Ajusta las reglas de validación según tus necesidades
-        ]);
+        // Verificar si el campo 'image' es un archivo
+        if ($request->hasFile('image')) {
+            $request->validate([
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Ajusta las reglas de validación según tus necesidades
+            ]);
 
-        // Obtiene el archivo de la solicitud
-        $image = $request->file('image');
+            // Obtiene el archivo de la solicitud
+            $image = $request->file('image');
 
-        // Genera un nombre único para el archivo
-        $imageName = 'requisicion_' . time() . '.' . $image->getClientOriginalExtension();
+            // Genera un nombre único para el archivo
+            $imageName = 'requisicion_' . time() . '.' . $image->getClientOriginalExtension();
 
-        // Guarda el archivo en el almacenamiento
-        $path = $image->storeAs('public/evidencias', $imageName);
+            // Guarda el archivo en el almacenamiento
+            $path = $image->storeAs('public/evidencias', $imageName);
 
-        // Devuelve la URL del archivo guardado
-        $url = Storage::url($path);
+            // Devuelve la URL del archivo guardado
+            $url = Storage::url($path);
 
-        // Devuelve una respuesta JSON con la URL de la imagen
-        return response()->json(['image_url' => $url]);
+            // Devuelve una respuesta JSON con la URL de la imagen
+            return response()->json(['image_url' => $url]);
+        } elseif (is_string($request->input('image'))) {
+            // Si 'image' es un string, devolverlo tal cual
+            return response()->json(['image_url' => $request->input('image')]);
+        } else {
+            return response()->json(['error' => 'Invalid input'], 422);
+        }
     }
+
 
     public function update(UpdateRequisicionRequest $request, $id)
     {
@@ -73,7 +82,6 @@ class RequisicionesController extends Controller
         // Validar los datos recibidos del formulario
         $data = $request->validated();
 
-        // Verificar si se ha enviado una imagen
         if ($request->hasFile('evidencia_entrega')) {
             // Guardar la imagen
             $image = $request->file('evidencia_entrega');
