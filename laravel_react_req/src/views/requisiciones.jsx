@@ -157,7 +157,7 @@ const Requisiciones = () => {
 
         <CardHeader className='w-full bg-gray-900 rounded-sm text-white flex justify-center items-center h-40 m-0'>
           {requisicion.evidencia_entrega ?
-            <img src={"http://127.0.0.1:8000" + requisicion.evidencia_entrega} alt="" /> : 'sin evidencia'
+            <img src={"http://127.0.0.1:8000" + requisicion.evidencia_entrega } alt="" /> : 'sin evidencia'
           }
 
         </CardHeader>
@@ -368,7 +368,7 @@ const Requisiciones = () => {
                 </table>)}
 
             </CardBody>
-            : <CardBody className="flex justify-center items-center h-max"><Spinner size="lg" variant="gradient" className='w-16 h-16' /></CardBody>
+            : <CardBody className="flex justify-center items-center h-max"><Spinner size="lg" variant="gradient" className='w-12 h-12 mt-40' /></CardBody>
           }
         </Card>
       </div>

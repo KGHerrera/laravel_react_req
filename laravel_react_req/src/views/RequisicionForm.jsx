@@ -188,7 +188,7 @@ export default function RequisicionForm({ id, closeModal, obtenerRequisiciones, 
 
 
 
-        {loading && <div>Loading...</div>}
+        {loading && <div>Cargando datos...</div>}
         {/* {errors && (
             <div className="alert">
               {Object.keys(errors).map((key) => (

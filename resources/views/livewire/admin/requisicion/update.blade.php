@@ -14,23 +14,21 @@
 
         <div class="card-body">
 
-                        <!-- Id_usuario Input -->
-            <div class='form-group'>
-                <label for='input-id_usuario' class='col-sm-2 control-label '> {{ __('Id_usuario') }}</label>
-                <input type='number' id='input-id_usuario' wire:model.lazy='id_usuario' class="form-control  @error('id_usuario') is-invalid @enderror" placeholder='' autocomplete='on'>
-                @error('id_usuario') <div class='invalid-feedback'>{{ $message }}</div> @enderror
-            </div>
-            <!-- Fecha_solicitud Input -->
-            <div class='form-group'>
-                <label for='input-fecha_solicitud' class='col-sm-2 control-label '> {{ __('Fecha_solicitud') }}</label>
-                <input type='date' id='input-fecha_solicitud' wire:model.lazy='fecha_solicitud' class="form-control  @error('fecha_solicitud') is-invalid @enderror" autocomplete='on'>
-                @error('fecha_solicitud') <div class='invalid-feedback'>{{ $message }}</div> @enderror
-            </div>
-            <!-- Estado Input -->
+                        <!-- Estado Input -->
             <div class='form-group'>
                 <label for='input-estado' class='col-sm-2 control-label '> {{ __('Estado') }}</label>
-                <input type='text' id='input-estado' wire:model.lazy='estado' class="form-control  @error('estado') is-invalid @enderror" placeholder='' autocomplete='on'>
+                <select id='input-estado' wire:model.lazy='estado' class="form-control  @error('estado') is-invalid @enderror">
+                    @foreach(getCrudConfig('Requisicion')->inputs()['estado']['select'] as $key => $value)
+                        <option value='{{ $key }}'>{{ $value }}</option>
+                    @endforeach
+                </select>
                 @error('estado') <div class='invalid-feedback'>{{ $message }}</div> @enderror
+            </div>
+            <!-- Costo_estimado Input -->
+            <div class='form-group'>
+                <label for='input-costo_estimado' class='col-sm-2 control-label '> {{ __('Costo_estimado') }}</label>
+                <input type='number' id='input-costo_estimado' wire:model.lazy='costo_estimado' class="form-control  @error('costo_estimado') is-invalid @enderror" placeholder='' autocomplete='on'>
+                @error('costo_estimado') <div class='invalid-feedback'>{{ $message }}</div> @enderror
             </div>
             <!-- Descripcion Input -->
             <div class='form-group'>
@@ -52,12 +50,6 @@
                     <a href="{{ $evidencia_entrega->temporaryUrl() }}" target="_blank"><img width="200" height="200" class="mt-3 img-fluid shadow" src="{{ $evidencia_entrega->temporaryUrl() }}" alt=""></a>
                 @endif
                 @error('evidencia_entrega') <div class='invalid-feedback'>{{ $message }}</div> @enderror
-            </div>
-            <!-- Costo_estimado Input -->
-            <div class='form-group'>
-                <label for='input-costo_estimado' class='col-sm-2 control-label '> {{ __('Costo_estimado') }}</label>
-                <input type='number' id='input-costo_estimado' wire:model.lazy='costo_estimado' class="form-control  @error('costo_estimado') is-invalid @enderror" placeholder='' autocomplete='on'>
-                @error('costo_estimado') <div class='invalid-feedback'>{{ $message }}</div> @enderror
             </div>
 
 

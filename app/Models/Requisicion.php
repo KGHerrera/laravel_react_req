@@ -25,6 +25,19 @@ class Requisicion extends Model
         'costo_estimado'
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Auto-asignar el ID del usuario al crear una requisición
+        static::creating(function ($requisicion) {
+            // Asignar el ID del usuario autenticado
+            $requisicion->id_usuario = auth()->id();
+
+            $requisicion->fecha_solicitud = now();
+        });
+    }
+
     // Relación con el modelo Usuario (si hay una)
     public function user()
     {

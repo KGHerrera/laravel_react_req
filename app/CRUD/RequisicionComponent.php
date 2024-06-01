@@ -40,13 +40,23 @@ class RequisicionComponent implements CRUDComponent
     public function inputs()
     {
         return [
-            'id_usuario' => 'number',
-            'fecha_solicitud' => 'date',
-            'estado' => 'text',
+           
+            'estado' => [
+                'select' => [
+                    'seleccionar' => 'seleccionar',
+                    'pendiente' => 'pendiente',
+                    'autorizada' => 'autorizada',
+                    'completada' => 'completada',
+                    'rechazada' => 'rechazada',
+                ]
+                
+                
+            ],
+            'costo_estimado' => 'number',
             'descripcion' => 'text',
             'motivo_rechazo' => 'text',
             'evidencia_entrega' => 'file',
-            'costo_estimado' => 'number',
+            
             
         ];
     }
@@ -56,13 +66,13 @@ class RequisicionComponent implements CRUDComponent
     public function validationRules()
     {
         return [
-            'id_usuario' => 'required|numeric',
-            'fecha_solicitud' => 'required|date',
+            
+            
             'estado' => 'required|in:pendiente,autorizada,rechazada,completada',
             'descripcion' => 'required|string',
             'motivo_rechazo' => 'nullable|string',
             'evidencia_entrega' => 'nullable|file',
-            'costo_estimado' => 'nullable|numeric',
+            'costo_estimado' => 'required|numeric',
         ];
     }
 

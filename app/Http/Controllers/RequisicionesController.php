@@ -46,7 +46,7 @@ class RequisicionesController extends Controller
         // Verificar si el campo 'image' es un archivo
         if ($request->hasFile('image')) {
             $request->validate([
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Ajusta las reglas de validación según tus necesidades
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', 
             ]);
 
             // Obtiene el archivo de la solicitud
@@ -83,13 +83,7 @@ class RequisicionesController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('evidencia_entrega')) {
-            // Guardar la imagen
-            $image = $request->file('evidencia_entrega');
-            $imageName = 'requisicion_' . $requisicion->id . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('evidencias/' . $requisicion->id), $imageName);
-
-            // Actualizar el campo de evidencia de entrega en la requisición
-            $data['evidencia_entrega'] = $imageName;
+             $this->uploadImage($request);
         }
 
         // Actualizar los datos de la requisición
